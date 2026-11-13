@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#090909">
+<title>Bia Prompts IA</title>
+<style>
+:root{--bg:#080808;--panel:#121212;--red:#f12b3d;--text:#f6f3f3;--muted:#9b9698;--line:#292326}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 50% -15%,#3b0911 0,transparent 40%),var(--bg);color:var(--text);font-family:Arial,sans-serif;min-height:100vh}
+button,input,textarea,select{font:inherit}button{cursor:pointer}.hidden{display:none!important}
+.page{max-width:1180px;margin:auto;padding:22px 18px 100px}
+header{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:22px}
+.brand{display:flex;align-items:center;gap:12px}.logo{width:44px;height:44px;border-radius:14px;background:linear-gradient(145deg,#ff4858,#9c071a);display:grid;place-items:center;font-size:22px;font-weight:900}
+.brand h1{font-size:19px;margin:0}.brand small{display:block;color:var(--muted);font-size:10px;letter-spacing:2px;margin-top:3px}
+button{border:0;border-radius:10px;padding:11px 14px;font-weight:bold}.primary{background:linear-gradient(100deg,#f12b3d,#b50e22);color:white}.secondary{background:#21191c;border:1px solid #40262d;color:#f2c8cd}.mutedbtn{background:#292326;color:white}
+h2{font-size:clamp(26px,5vw,40px);margin:10px 0}h2 span{color:var(--red)}p{color:var(--muted);line-height:1.5}
+.panel{background:linear-gradient(180deg,#181516,#101010);border:1px solid var(--line);border-radius:18px;padding:20px;margin:16px 0}
+.auth-wrap{min-height:100vh;display:grid;place-items:center;padding:18px}.auth-card{width:min(480px,100%);background:#151214;border:1px solid #503038;border-radius:20px;padding:24px;box-shadow:0 20px 80px #0008}
+.price{font-size:38px;font-weight:900;color:#fff;margin:12px 0}.price small{font-size:14px;color:var(--muted);font-weight:400}
+.field{display:grid;gap:7px;margin:13px 0}.field label{font-size:12px;color:#d5cdd0;font-weight:bold}.field input,.field textarea,.field select{width:100%;padding:13px;background:#0d0c0c;border:1px solid #382d31;border-radius:10px;color:white;outline:none}.field textarea{min-height:130px;resize:vertical}
+.full{width:100%}.small{font-size:11px}.muted{color:var(--muted)}.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.between{justify-content:space-between}
+.search input{width:100%;padding:15px;border-radius:13px;background:#141214;border:1px solid #30262a;color:white}
+.filters{display:flex;gap:8px;overflow:auto;padding:12px 0}.chip{white-space:nowrap;border:1px solid #30282b;background:#141214;color:#c9c2c4;border-radius:30px;padding:9px 14px;font-size:12px}.chip.active{background:var(--red);color:white}
+.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}.card{border:1px solid var(--line);background:linear-gradient(180deg,#181516,#101010);border-radius:17px;overflow:hidden}.thumb{height:210px;background:#242022;position:relative}.thumb img,.thumb video{width:100%;height:100%;object-fit:cover}.tag{position:absolute;top:10px;left:10px;background:#141014d9;border-radius:30px;padding:5px 9px;font-size:10px}.card-body{padding:12px}.card h4{font-size:14px;margin:8px 0 12px;min-height:32px}.actions{display:grid;gap:7px}.actions button{font-size:11px;padding:10px 8px}
+.nav{display:flex;justify-content:space-around;gap:6px;padding:12px 5px;position:fixed;bottom:0;left:0;right:0;background:#0d0b0cf0;border-top:1px solid #302529;z-index:5}.nav button{background:none;color:#aaa;font-size:10px;display:grid;gap:4px}.nav button span{font-size:19px}.nav button.active{color:#ff5364}
+.toast{position:fixed;left:50%;bottom:88px;transform:translate(-50%,15px);background:white;color:#111;padding:11px 17px;border-radius:30px;font-size:12px;font-weight:bold;opacity:0;transition:.25s;z-index:20}.toast.show{opacity:1;transform:translate(-50%,0)}
+.modal{display:none;position:fixed;inset:0;background:#000b;z-index:10;align-items:center;justify-content:center;padding:16px}.modal.show{display:flex}.dialog{width:min(600px,100%);max-height:90vh;overflow:auto;background:#151214;border:1px solid #503038;border-radius:18px;padding:20px}
+.detail-prompt{white-space:pre-wrap;background:#0c0b0b;border:1px solid #32292c;border-radius:12px;padding:13px;font-size:12px;line-height:1.6;margin:12px 0}
+.progress{height:10px;background:#332d30;border-radius:30px;overflow:hidden}.progress>div{height:100%;background:#22a06b;width:100%}
+.admin-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.admin-tile{padding:16px;background:#201a1d;border:1px solid #3a2a30;border-radius:13px}
+@media(max-width:850px){.grid{grid-template-columns:repeat(3,minmax(0,1fr))}}@media(max-width:600px){.page{padding:15px 13px 100px}.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.thumb{height:180px}.auth-card{padding:19px}}@media(max-width:370px){.thumb{height:150px}}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+
+<section id="salesPage" class="auth-wrap">
+  <div class="auth-card">
+    <div class="brand"><div class="logo">✦</div><div><h1>BIA PROMPTS IA</h1><small>SUA CRIATIVIDADE SEM LIMITES</small></div></div>
+    <p style="color:#ff6571;font-weight:bold;letter-spacing:2px;font-size:11px;margin-top:28px">ACESSO EXCLUSIVO</p>
+    <h2>Entre no universo dos <span>prompts</span></h2>
+    <p>Acesse uma biblioteca criativa com prompts, ferramentas e atualizações.</p>
+    <div class="panel">
+      <div class="muted small">PLANO TRIMESTRAL</div>
+      <div class="price">R$ 45,00 <small>/ 90 dias</small></div>
+      <p>✓ Biblioteca de prompts<br>✓ Fotos e vídeos de referência<br>✓ Geradores criativos<br>✓ Atualizações durante a assinatura</p>
+      <a href="https://pay.cakto.com.br/vmuox3d_1278008" target="_blank" rel="noopener"><button class="primary full">Comprar acesso — R$ 45,00</button></a>
+    </div>
+    <button class="secondary full" onclick="showLogin()">Já comprei? Entrar na minha conta</button>
+    <p class="small">Após a confirmação do pagamento, sua conta será liberada. A liberação automática depende da integração de webhook da Cakto com o Supabase.</p>
+  </div>
+</section>
+
+<section id="authPage" class="auth-wrap hidden">
+  <div class="auth-card">
+    <div class="brand"><div class="logo">✦</div><div><h1>BIA PROMPTS IA</h1><small>ACESSO DOS MEMBROS</small></div></div>
+    <h2 id="authTitle">Entrar na conta</h2>
+    <p id="authDescription">Use seu e-mail e sua senha para acessar.</p>
+    <div class="field"><label>E-mail</label><input id="authEmail" type="email" autocomplete="email" placeholder="seuemail@exemplo.com"></div>
+    <div class="field"><label>Senha</label><input id="authPassword" type="password" autocomplete="current-password" placeholder="Sua senha"></div>
+    <button id="authSubmit" class="primary full" onclick="submitAuth()">Entrar</button>
+    <button class="secondary full" style="margin-top:9px" onclick="toggleAuthMode()">Criar minha conta</button>
+    <button class="mutedbtn full" style="margin-top:9px" onclick="resetPassword()">Esqueci minha senha</button>
+    <button class="mutedbtn full" style="margin-top:9px" onclick="showSales()">Voltar</button>
+    <p id="authMessage" class="small"></p>
+  </div>
+</section>
+
+<div id="memberApp" class="hidden">
+  <div class="page">
+    <header>
+      <div class="brand"><div class="logo">✦</div><div><h1>BIA PROMPTS IA</h1><small>SUA CRIATIVIDADE SEM LIMITES</small></div></div>
+      <div class="row"><button class="secondary" onclick="openAccount()">Minha conta</button><button class="primary" onclick="logout()">Sair</button></div>
+    </header>
+    <section>
+      <div style="color:#ff6571;font-size:11px;font-weight:800;letter-spacing:2px">✦ BIBLIOTECA CRIATIVA</div>
+      <h2>Galeria de <span>Prompts</span></h2>
+      <p>Escolha, copie e crie imagens incríveis com inteligência artificial.</p>
+    </section>
+    <div class="panel" id="subscriptionPanel">
+      <div class="row between"><b>Minha assinatura</b><span id="subscriptionStatus" class="small">Verificando...</span></div>
+      <h2 id="daysLeft">— dias</h2>
+      <div class="progress"><div id="daysBar"></div></div>
+      <p id="expiryText" class="small">Prazo da assinatura</p>
+      <a href="https://pay.cakto.com.br/vmuox3d_1278008" target="_blank" rel="noopener"><button class="primary">Renovar por R$ 45,00</button></a>
+    </div>
+
+    <section id="librarySection">
+      <div class="search"><input id="search" placeholder="Buscar prompts..." oninput="render()"></div>
+      <div class="filters" id="filters"></div>
+      <div class="panel small">✨ <b>Dica:</b> escolha um prompt, copie com um toque e use na sua IA favorita.</div>
+      <div class="row between"><h3 id="sectionTitle">Explorar prompts</h3><span id="count" class="muted small"></span></div>
+      <main class="grid" id="grid"></main>
+    </section>
+
+    <section id="generatorsSection" class="hidden">
+      <h2>Geradores de <span>IA</span></h2>
+      <p>Monte ideias e prompts para seus conteúdos.</p>
+      <div class="panel">
+        <h3>Gerador de prompt para vídeo</h3>
+        <div class="field"><label>Imagem do produto (referência)</label><input id="productImage" type="file" accept="image/*"></div>
+        <div class="field"><label>Descreva o produto ou objetivo</label><textarea id="videoIdea" placeholder="Ex.: vídeo UGC mostrando o produto em uso..."></textarea></div>
+        <div class="field"><label>Estilo do vídeo</label><select id="videoStyle"><option>UGC realista para TikTok Shop</option><option>Comercial cinematográfico</option><option>POV natural de celular</option><option>Vídeo demonstrativo de produto</option></select></div>
+        <div class="field"><label>Duração desejada</label><select id="videoDuration"><option>8 segundos</option><option>15 segundos</option><option>30 segundos</option></select></div>
+        <button class="primary full" onclick="generateVideoPrompt()">Gerar prompt para vídeo</button>
+        <div id="videoOutput" class="detail-prompt hidden"></div><button id="copyVideo" class="secondary full hidden" onclick="copyText('videoOutput')">Copiar prompt</button>
+      </div>
+      <div class="panel">
+        <h3>Gerador de headlines</h3>
+        <div class="field"><label>Produto ou assunto</label><input id="headlineSubject" placeholder="Ex.: organizador de cozinha"></div>
+        <div class="field"><label>Objetivo</label><select id="headlineGoal"><option>Despertar curiosidade</option><option>Gerar desejo de compra</option><option>Destacar um benefício</option><option>Criar urgência sem exageros</option></select></div>
+        <button class="primary full" onclick="generateHeadlines()">Gerar headlines</button>
+        <div id="headlineOutput" class="detail-prompt hidden"></div><button id="copyHeadline" class="secondary full hidden" onclick="copyText('headlineOutput')">Copiar headlines</button>
+      </div>
+      <div class="panel">
+        <h3>Gerador personalizado</h3>
+        <div class="field"><label>O que deseja criar?</label><input id="customSubject" placeholder="Ex.: foto de modelo usando uma bolsa"></div>
+        <div class="field"><label>Estilo visual</label><select id="customStyle"><option>Fotorrealista</option><option>Editorial de moda</option><option>UGC espontâneo</option><option>Minimalista</option><option>Cinematográfico</option><option>Publicidade premium</option></select></div>
+        <div class="field"><label>Cenário</label><input id="customScene" placeholder="Ex.: quarto moderno, praia, estúdio..."></div>
+        <div class="field"><label>Iluminação</label><select id="customLight"><option>Luz natural suave</option><option>Luz dourada</option><option>Iluminação de estúdio</option><option>Luz cinematográfica</option></select></div>
+        <div class="field"><label>Formato</label><select id="customFormat"><option>Vertical 9:16</option><option>Quadrado 1:1</option><option>Horizontal 16:9</option></select></div>
+        <div class="field"><label>Detalhes adicionais</label><textarea id="customDetails" placeholder="Descreva pose, câmera, movimento, cores e outros detalhes..."></textarea></div>
+        <button class="primary full" onclick="generateCustom()">Criar meu prompt</button>
+        <div id="customOutput" class="detail-prompt hidden"></div><button id="copyCustom" class="secondary full hidden" onclick="copyText('customOutput')">Copiar prompt</button>
+      </div>
+    </section>
+
+    <section id="adminSection" class="hidden">
+      <div class="row between"><h2>Painel <span>administrador</span></h2><button class="secondary" onclick="closeAdmin()">Fechar</button></div>
+      <div class="admin-grid">
+        <div class="admin-tile"><b>Biblioteca</b><p class="small">Adicionar e gerenciar prompts.</p></div>
+        <div class="admin-tile"><b>Usuários e assinaturas</b><p class="small">A gestão real será feita com políticas seguras no Supabase.</p></div>
+      </div>
+      <div class="panel">
+        <h3>Adicionar prompt</h3>
+        <div class="field"><label>Nome do prompt</label><input id="adminTitle" placeholder="Nome do prompt"></div>
+        <div class="field"><label>Categoria</label><select id="adminCat"><option>POV</option><option>UGC</option><option>Celular</option><option>Movimentos</option><option>Feminino</option><option>Moda</option><option>Casa</option><option>Cenários</option><option>Kids</option></select></div>
+        <div class="field"><label>Tipo / etiqueta</label><input id="adminType" placeholder="Ex.: Moda"></div>
+        <div class="field"><label>Foto ou vídeo</label><input id="adminMedia" type="file" accept="image/*,video/*"></div>
+        <div class="field"><label>Texto do prompt</label><textarea id="adminPrompt" placeholder="Escreva o prompt completo..."></textarea></div>
+        <button class="primary full" onclick="addPrompt()">Salvar prompt neste navegador (modo de demonstração)</button>
+        <p class="small">Para publicar para todos os compradores, o salvamento será conectado ao banco e ao Storage do Supabase.</p>
+      </div>
+    </section>
+  </div>
+  <nav class="nav">
+    <button class="active" onclick="showSection('librarySection',this)"><span>⌂</span>Início</button>
+    <button onclick="showSection('generatorsSection',this)"><span>✧</span>Geradores</button>
+    <button onclick="openAdmin()"><span>⚙</span>Admin</button>
+    <button onclick="openAccount()"><span>♡</span>Conta</button>
+  </nav>
+</div>
+
+<div class="modal" id="modal" onclick="if(event.target===this)closeModal()"><div class="dialog" id="dialog"></div></div>
+<div class="toast" id="toast">Pronto!</div>
+
+<script>
+/*
+  CONFIGURAÇÃO NECESSÁRIA:
+  1) Crie o projeto Supabase.
+  2) Em Project Settings > API, copie Project URL e anon/public key.
+  3) Cole nos campos abaixo.
+  4) Configure Auth, tabelas, RLS, Storage e webhook Cakto no servidor.
+  Nunca coloque service_role key, senha de administrador ou segredo de webhook neste HTML.
+*/
+const SUPABASE_URL = "COLE_AQUI_A_URL_DO_SEU_PROJETO";
+const SUPABASE_ANON_KEY = "COLE_AQUI_SUA_CHAVE_ANON_PUBLIC";
+const CAKTO_CHECKOUT_URL = "https://pay.cakto.com.br/vmuox3d_1278008";
+const ADMIN_EMAIL = "biancabordado@gmail.com";
+let supabaseClient = null;
+if(window.supabase && SUPABASE_URL.startsWith("https://") && !SUPABASE_URL.includes("COLE_AQUI") && !SUPABASE_ANON_KEY.includes("COLE_AQUI")){
+  supabaseClient = window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
+}
+
+const seed=[
+{id:1,title:"Selfie no espelho — look elegante",cat:"POV",type:"Feminino",img:"https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=700&auto=format&fit=crop",prompt:"Crie uma fotografia ultrarrealista em estilo selfie no espelho, preservando fielmente a aparência da pessoa da imagem de referência. A modelo usa um look elegante, pose natural e expressão confiante. Ambiente moderno, iluminação suave, textura realista da pele, fotografia vertical 9:16, alta definição."},
+{id:2,title:"Retrato lifestyle sofisticado",cat:"UGC",type:"Feminino",img:"https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=700&auto=format&fit=crop",prompt:"Fotografia lifestyle ultrarrealista de uma mulher em ambiente sofisticado, pose espontânea, luz natural lateral, composição editorial, detalhes naturais e acabamento de câmera profissional. Manter identidade e características da referência. Formato vertical 9:16."},
+{id:3,title:"Look casual — foto no espelho",cat:"Celular",type:"Moda",img:"https://images.unsplash.com/photo-1483985988355-763728e1935b?w=700&auto=format&fit=crop",prompt:"Recrie uma foto casual de moda feita com celular diante do espelho. Preserve exatamente a roupa e a identidade da referência. Enquadramento de corpo inteiro, ambiente clean, luz natural, aparência espontânea e realista, formato 9:16."},
+{id:4,title:"Pose editorial com movimento",cat:"Movimentos",type:"Fashion",img:"https://images.unsplash.com/photo-1529139574466-a303027c1d8b?w=700&auto=format&fit=crop",prompt:"Fotografia fashion editorial capturando um movimento natural da modelo, tecido e cabelo com movimento sutil, pose elegante, luz cinematográfica suave, fundo minimalista e realismo fotográfico. Preservar rosto, corpo e roupa da referência. Vertical 9:16."},
+{id:5,title:"Retrato com luz dourada",cat:"UGC",type:"Retrato",img:"https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?w=700&auto=format&fit=crop",prompt:"Retrato fotográfico natural durante o pôr do sol, luz dourada suave contornando o rosto, expressão espontânea, pele com textura real, fundo desfocado e estética de fotografia feita em smartphone premium. Preservar a pessoa da imagem original."},
+{id:6,title:"POV — rotina e lifestyle",cat:"POV",type:"Lifestyle",img:"https://images.unsplash.com/photo-1517841905240-472988babdf9?w=700&auto=format&fit=crop",prompt:"Imagem em primeira pessoa com estética UGC autêntica, enquadramento espontâneo, iluminação ambiente natural e detalhes realistas. Aparência de conteúdo capturado no dia a dia com smartphone, sem aspecto artificial, formato vertical 9:16."},
+{id:7,title:"Ensaio minimalista",cat:"Celular",type:"Feminino",img:"https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=700&auto=format&fit=crop",prompt:"Ensaio fotográfico minimalista com fundo neutro, composição limpa, pose delicada e natural, iluminação difusa, alta fidelidade de pele e cabelo. Manter as características da pessoa de referência e resultado fotográfico realista."},
+{id:8,title:"Passo e giro fashion",cat:"Movimentos",type:"Moda",img:"https://images.unsplash.com/photo-1525501484664-8e9a2a1c7e7e?w=700&auto=format&fit=crop",prompt:"Cena fashion com a modelo dando um passo e realizando um giro suave, movimento natural da roupa, câmera acompanhando discretamente, estética de campanha de moda, iluminação profissional e realismo cinematográfico. Vertical 9:16."}
+];
+
+let prompts=JSON.parse(localStorage.getItem("biaPrompts")||"null")||seed;
+let favorites=JSON.parse(localStorage.getItem("biaFavs")||"[]");
+let current="Todos",authMode="login",currentUser=null;
+
+function show(id){["salesPage","authPage","memberApp"].forEach(x=>document.getElementById(x).classList.add("hidden"));document.getElementById(id).classList.remove("hidden")}
+function showSales(){show("salesPage")}
+function showLogin(){show("authPage");authMode="login";updateAuthMode()}
+function toggleAuthMode(){authMode=authMode==="login"?"signup":"login";updateAuthMode()}
+function updateAuthMode(){document.getElementById("authTitle").textContent=authMode==="login"?"Entrar na conta":"Criar minha conta";document.getElementById("authSubmit").textContent=authMode==="login"?"Entrar":"Criar conta";document.getElementById("authDescription").textContent=authMode==="login"?"Use seu e-mail e sua senha para acessar.":"Crie sua conta com o e-mail usado na compra."}
+function message(t){document.getElementById("authMessage").textContent=t}
+
+async function submitAuth(){
+ const email=document.getElementById("authEmail").value.trim(),password=document.getElementById("authPassword").value;
+ if(!email||!password){message("Preencha e-mail e senha.");return}
+ if(!supabaseClient){message("O layout está pronto, mas falta conectar o projeto Supabase nas configurações do código. O acesso real ainda não está ativado.");return}
+ try{
+  const result=authMode==="signup"?await supabaseClient.auth.signUp({email,password}):await supabaseClient.auth.signInWithPassword({email,password});
+  if(result.error)throw result.error;
+  if(authMode==="signup"){message("Cadastro iniciado! Verifique seu e-mail para confirmar a conta.");return}
+  currentUser=result.data.user;
+  await enterMember();
+ }catch(e){message(e.message||"Não foi possível autenticar.")}
+}
+
+async function resetPassword(){
+ const email=document.getElementById("authEmail").value.trim();if(!email){message("Digite seu e-mail primeiro.");return}
+ if(!supabaseClient){message("Conecte o Supabase para ativar a recuperação de senha.");return}
+ const {error}=await supabaseClient.auth.resetPasswordForEmail(email,{redirectTo:location.href});message(error?error.message:"Enviamos as instruções para seu e-mail.")
+}
+
+async function enterMember(){
+ // A checagem de assinatura precisa ser feita por função/tabela protegida no servidor.
+ // Não liberar usuário pago apenas com base em dados locais ou no retorno do navegador.
+ const {data}=await supabaseClient.from("profiles").select("access_expires_at,is_admin").eq("id",currentUser.id).maybeSingle();
+ if(!data){message("Conta criada, mas o acesso ainda não foi liberado. A confirmação da compra pela Cakto é necessária.");return}
+ if(!data.is_admin && (!data.access_expires_at||new Date(data.access_expires_at)<=new Date())){message("Sua assinatura não está ativa. Confira o pagamento ou renove seu acesso.");return}
+ show("memberApp");updateSubscription(data);render();
+}
+
+function updateSubscription(profile){
+ const admin=!!profile.is_admin;document.getElementById("subscriptionPanel").classList.toggle("hidden",admin);
+ if(admin)return;
+ const expiry=new Date(profile.access_expires_at),remaining=Math.max(0,Math.ceil((expiry-Date.now())/86400000));
+ document.getElementById("daysLeft").textContent=remaining+" dias restantes";
+ document.getElementById("subscriptionStatus").textContent=remaining>0?"Ativa":"Expirada";
+ document.getElementById("expiryText").textContent="Vencimento: "+expiry.toLocaleDateString("pt-BR");
+ document.getElementById("daysBar").style.width=Math.min(100,remaining/90*100)+"%";
+}
+
+async function logout(){if(supabaseClient)await supabaseClient.auth.signOut();currentUser=null;showSales()}
+function persist(){localStorage.setItem("biaPrompts",JSON.stringify(prompts));localStorage.setItem("biaFavs",JSON.stringify(favorites))}
+function esc(s=""){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function toast(t){const el=document.getElementById("toast");el.textContent=t;el.classList.add("show");setTimeout(()=>el.classList.remove("show"),1900)}
+function mediaElement(p){if(!p.img)return "";if(/\.(mp4|webm|ogg)(\?|$)/i.test(p.img)||p.img.startsWith("data:video/"))return `<video src="${p.img}" muted loop autoplay playsinline controls></video>`;return `<img src="${p.img}" alt="${esc(p.title)}" loading="lazy">`}
+function setFilter(c){current=c;render()}
+
+function render(){
+ const cats=["Todos","POV","UGC","Celular","Movimentos","Feminino","Moda","Favoritos"];
+ document.getElementById("filters").innerHTML=cats.map(c=>`<button class="chip ${current===c?"active":""}" onclick="setFilter('${c}')">${c}</button>`).join("");
+ const q=document.getElementById("search").value.toLowerCase();
+ const list=prompts.filter(p=>(current==="Todos"||(current==="Favoritos"?favorites.includes(p.id):p.cat===current||p.type===current))&&(`${p.title} ${p.cat} ${p.type} ${p.prompt}`.toLowerCase().includes(q)));
+ document.getElementById("sectionTitle").textContent=current==="Todos"?"Explorar prompts":current;document.getElementById("count").textContent=list.length+" prompts";
+ document.getElementById("grid").innerHTML=list.length?list.map(p=>`<article class="card"><div class="thumb">${mediaElement(p)}<span class="tag">${esc(p.cat)}</span></div><div class="card-body"><div class="muted small">${esc(p.type||"Criativo")}</div><h4>${esc(p.title)}</h4><div class="actions"><button class="primary" onclick="copyPrompt(${p.id})">▣ Copiar prompt</button><button class="secondary" onclick="details(${p.id})">✦ Ver prompt completo</button><button class="secondary" onclick="toggleFav(${p.id})">${favorites.includes(p.id)?"♥ Salvo":"♡ Salvar"}</button></div></div></article>`).join(""):'<div class="panel">Nenhum prompt encontrado.</div>';
+}
+
+async function copyPrompt(id){const p=prompts.find(x=>x.id===id);await copyString(p.prompt)}
+async function copyString(s){try{await navigator.clipboard.writeText(s)}catch(e){const a=document.createElement("textarea");a.value=s;document.body.appendChild(a);a.select();document.execCommand("copy");a.remove()}toast("Copiado com sucesso!")}
+function toggleFav(id){favorites=favorites.includes(id)?favorites.filter(x=>x!==id):[...favorites,id];persist();render()}
+function showModal(content){document.getElementById("dialog").innerHTML=content;document.getElementById("modal").classList.add("show")}
+function closeModal(){document.getElementById("modal").classList.remove("show")}
+function details(id){const p=prompts.find(x=>x.id===id);showModal(`<h3>${esc(p.title)}</h3>${p.img?mediaElement(p):""}<div class="detail-prompt">${esc(p.prompt)}</div><button class="primary full" onclick="copyPrompt(${id})">Copiar prompt</button><button class="secondary full" style="margin-top:8px" onclick="closeModal()">Fechar</button>`)}
+function showSection(id,el){document.getElementById("librarySection").classList.toggle("hidden",id!=="librarySection");document.getElementById("generatorsSection").classList.toggle("hidden",id!=="generatorsSection");document.getElementById("adminSection").classList.add("hidden");document.querySelectorAll(".nav button").forEach(b=>b.classList.remove("active"));if(el)el.classList.add("active")}
+
+async function openAdmin(){
+ if(!currentUser||!supabaseClient){toast("Entre com uma conta autorizada.");return}
+ const {data,error}=await supabaseClient.from("profiles").select("is_admin").eq("id",currentUser.id).maybeSingle();
+ if(error||!data?.is_admin){toast("Acesso exclusivo do administrador.");return}
+ document.getElementById("librarySection").classList.add("hidden");document.getElementById("generatorsSection").classList.add("hidden");document.getElementById("adminSection").classList.remove("hidden");
+}
+
+function closeAdmin(){document.getElementById("adminSection").classList.add("hidden");document.getElementById("librarySection").classList.remove("hidden")}
+
+async function addPrompt(){
+ const title=document.getElementById("adminTitle").value.trim(),prompt=document.getElementById("adminPrompt").value.trim(),file=document.getElementById("adminMedia").files[0];
+ if(!title||!prompt){toast("Preencha nome e prompt.");return}
+ if(file){toast("O upload compartilhado precisa do Storage do Supabase configurado.");return}
+ prompts.unshift({id:Date.now(),title,cat:document.getElementById("adminCat").value,type:document.getElementById("adminType").value||"Criativo",img:"",prompt});persist();toast("Adicionado apenas nesta demonstração.");render();
+}
+
+function openAccount(){if(!currentUser){toast("Faça login primeiro.");return}showModal(`<h3>Minha conta</h3><p>${esc(currentUser.email||"")}</p><p class="small muted">O prazo e o status da assinatura são consultados no banco de dados quando o Supabase estiver configurado.</p><button class="secondary full" onclick="closeModal()">Fechar</button>`)}
+
+function generateVideoPrompt(){
+ const idea=document.getElementById("videoIdea").value.trim(),style=document.getElementById("videoStyle").value,duration=document.getElementById("videoDuration").value;
+ if(!idea){toast("Descreva o produto ou objetivo.");return}
+ const text=`Crie um vídeo ${style}, com duração de ${duration}, usando a imagem enviada como referência visual principal. ${idea}. Preserve fielmente a aparência, formato, cores, embalagem, rótulos, proporções e detalhes do produto original. Desenvolva uma sequência natural de cenas com movimentos realistas, câmera suave e enquadramento vertical 9:16. Não invente características, acessórios ou textos que não estejam na referência. Resultado fotorrealista, com aparência de conteúdo profissional e autêntico para redes sociais.`;
+ document.getElementById("videoOutput").textContent=text;document.getElementById("videoOutput").classList.remove("hidden");document.getElementById("copyVideo").classList.remove("hidden");
+}
+
+function generateHeadlines(){
+ const subject=document.getElementById("headlineSubject").value.trim(),goal=document.getElementById("headlineGoal").value;if(!subject){toast("Informe o produto ou assunto.");return}
+ const lines=[`Você precisa conhecer ${subject}!`,`O detalhe de ${subject} que pode facilitar sua rotina`,`Será que ${subject} vale a pena? Veja essa ideia`,`Uma opção interessante para quem procura ${subject}`,`${subject}: uma ideia para colocar na sua lista`];
+ document.getElementById("headlineOutput").textContent=`Objetivo: ${goal}\n\n`+lines.map((x,i)=>(i+1)+". "+x).join("\n");document.getElementById("headlineOutput").classList.remove("hidden");document.getElementById("copyHeadline").classList.remove("hidden");
+}
+
+function generateCustom(){
+ const subject=document.getElementById("customSubject").value.trim();if(!subject){toast("Descreva o que deseja criar.");return}
+ const text=`Crie uma imagem ${document.getElementById("customStyle").value} de ${subject}. Cenário: ${document.getElementById("customScene").value||"ambiente harmonioso e adequado ao tema"}. Iluminação: ${document.getElementById("customLight").value}. Formato: ${document.getElementById("customFormat").value}. Detalhes adicionais: ${document.getElementById("customDetails").value||"composição equilibrada, acabamento profissional e detalhes realistas"}. Preserve fielmente as características de qualquer imagem de referência fornecida.`;
+ document.getElementById("customOutput").textContent=text;document.getElementById("customOutput").classList.remove("hidden");document.getElementById("copyCustom").classList.remove("hidden");
+}
+
+function copyText(id){copyString(document.getElementById(id).textContent)}
+
+(async()=>{if(supabaseClient){const {data}=await supabaseClient.auth.getSession();if(data.session){currentUser=data.session.user;await enterMember()}}})();
+</script>
+</body>
+</html>

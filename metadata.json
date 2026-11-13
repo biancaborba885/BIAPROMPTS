@@ -1,0 +1,6 @@
+{
+  "name": "Bia Prompts IA",
+  "description": "Biblioteca criativa de prompts, referências visuais e geradores de IA para criadores e marcas.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

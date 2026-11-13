@@ -1,0 +1,246 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "Authenticated member profile and subscription status for Bia Prompts IA.",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "description": "Firebase Auth UID of the user.",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "email": {
+          "type": "string",
+          "description": "Verified email address of the user.",
+          "maxLength": 254
+        },
+        "displayName": {
+          "type": "string",
+          "description": "Display name of the member.",
+          "maxLength": 100
+        },
+        "planStatus": {
+          "type": "string",
+          "description": "Current subscription status (pending until paid, active when paid, expired after cycle).",
+          "enum": ["pending", "active", "expired"]
+        },
+        "accessExpiresAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Expiration timestamp for the user's paid access."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp when the profile was created."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp when the profile was last updated."
+        }
+      },
+      "required": ["uid", "email", "displayName", "planStatus", "accessExpiresAt", "createdAt", "updatedAt"]
+    },
+    "ApprovedPurchase": {
+      "title": "ApprovedPurchase",
+      "description": "Pre-approved paid buyer email record created by admin or webhook before or after user sign-in.",
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string",
+          "description": "Lowercase email address of the paid customer.",
+          "maxLength": 254
+        },
+        "planStatus": {
+          "type": "string",
+          "enum": ["active"]
+        },
+        "durationDays": {
+          "type": "number",
+          "description": "Subscription duration in days (e.g., 90)."
+        },
+        "grantedBy": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": ["email", "planStatus", "durationDays", "grantedBy", "createdAt"]
+    },
+    "PromptItem": {
+      "title": "PromptItem",
+      "description": "Curated creative prompt with reference media in the shared paid library.",
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "description": "Prompt title shown in the gallery.",
+          "minLength": 2,
+          "maxLength": 120
+        },
+        "category": {
+          "type": "string",
+          "description": "Primary prompt category.",
+          "enum": ["POV", "UGC", "Celular", "Movimentos", "Feminino", "Moda", "Casa", "Cenários", "Kids"]
+        },
+        "typeLabel": {
+          "type": "string",
+          "description": "Subcategory or style descriptor.",
+          "minLength": 1,
+          "maxLength": 40
+        },
+        "mediaUrl": {
+          "type": "string",
+          "description": "Relative public path or HTTPS URL for the reference image or video.",
+          "maxLength": 500
+        },
+        "mediaType": {
+          "type": "string",
+          "description": "Type of media asset.",
+          "enum": ["image", "video"]
+        },
+        "promptText": {
+          "type": "string",
+          "description": "Full prompt text to copy and use.",
+          "minLength": 10,
+          "maxLength": 4000
+        },
+        "authorId": {
+          "type": "string",
+          "description": "UID of the admin who published the prompt.",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp when created."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp when updated."
+        }
+      },
+      "required": ["title", "category", "typeLabel", "mediaUrl", "mediaType", "promptText", "authorId", "createdAt", "updatedAt"]
+    },
+    "FavoriteItem": {
+      "title": "FavoriteItem",
+      "description": "User-saved favorite prompt reference.",
+      "type": "object",
+      "properties": {
+        "promptId": {
+          "type": "string",
+          "description": "ID of the favorited prompt.",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "userId": {
+          "type": "string",
+          "description": "UID of the user who saved the prompt.",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "savedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp when favorited."
+        }
+      },
+      "required": ["promptId", "userId", "savedAt"]
+    },
+    "GenerationItem": {
+      "title": "GenerationItem",
+      "description": "Saved AI-generated prompt or headline batch created by a paid user.",
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "description": "UID of the owner user.",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "generatorType": {
+          "type": "string",
+          "description": "Generator mode used.",
+          "enum": ["video", "headlines", "custom"]
+        },
+        "title": {
+          "type": "string",
+          "description": "Short summary or subject of the generation.",
+          "minLength": 1,
+          "maxLength": 120
+        },
+        "outputText": {
+          "type": "string",
+          "description": "Generated prompt or headline output.",
+          "minLength": 5,
+          "maxLength": 6000
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp when generated."
+        }
+      },
+      "required": ["userId", "generatorType", "title", "outputText", "createdAt"]
+    },
+    "AdminMarker": {
+      "title": "AdminMarker",
+      "description": "Server-managed admin access marker document.",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "email": {
+          "type": "string",
+          "maxLength": 254
+        }
+      },
+      "required": ["uid", "email"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/UserProfile" },
+      "description": "Member profiles containing email and paid subscription state."
+    },
+    "/approved_purchases/{emailKey}": {
+      "schema": { "$ref": "#/entities/ApprovedPurchase" },
+      "description": "Admin-registered paid email records used to unlock buyer accounts."
+    },
+    "/prompts/{promptId}": {
+      "schema": { "$ref": "#/entities/PromptItem" },
+      "description": "Shared paid creative prompt library."
+    },
+    "/users/{userId}/favorites/{promptId}": {
+      "schema": { "$ref": "#/entities/FavoriteItem" },
+      "description": "Per-user saved favorite prompts."
+    },
+    "/users/{userId}/generations/{genId}": {
+      "schema": { "$ref": "#/entities/GenerationItem" },
+      "description": "Per-user saved AI generator outputs."
+    },
+    "/admins/{userId}": {
+      "schema": { "$ref": "#/entities/AdminMarker" },
+      "description": "Admin role markers."
+    }
+  }
+}
